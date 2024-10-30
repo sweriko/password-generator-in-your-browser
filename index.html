@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Secure Password Generator</title>
+  <style>
+    /* Base styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background-color: #121212;
+      color: #ffffff;
+      margin: 0;
+      padding: 0 1rem;
+    }
+    .container {
+      text-align: center;
+      background-color: #1e1e1e;
+      padding: 2rem;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: #f2f2f2;
+    }
+    .password-box {
+      background-color: #333;
+      padding: 1rem;
+      border-radius: 8px;
+      font-size: 1.25rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      cursor: pointer;
+      color: #00e676;
+      word-wrap: break-word;
+      transition: background-color 0.3s, transform 0.1s ease;
+    }
+    .password-box.copied {
+      background-color: #00e676;
+      color: #1e1e1e;
+      transform: scale(1.05);
+    }
+    button {
+      background-color: #00796b;
+      color: #ffffff;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #004d40;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Secure Password Generator</h1>
+  <div id="password" class="password-box" onclick="copyToClipboard()">Click to copy password</div>
+  <button onclick="generatePassword()">Generate New Password</button>
+</div>
+
+<script>
+  function generatePassword(length = 16) {
+    const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+~|}{[]:;?><,./-=";
+    let password = "";
+    const array = new Uint32Array(length);
+    window.crypto.getRandomValues(array);
+
+    for (let i = 0; i < length; i++) {
+      password += charset[array[i] % charset.length];
+    }
+
+    const passwordBox = document.getElementById("password");
+    passwordBox.textContent = password;
+  }
+
+  function copyToClipboard() {
+    const passwordText = document.getElementById("password").textContent;
+    navigator.clipboard.writeText(passwordText).then(() => {
+      const passwordBox = document.getElementById("password");
+      passwordBox.classList.add("copied");
+
+      // Remove the copied class after 500ms for a smooth animation effect
+      setTimeout(() => {
+        passwordBox.classList.remove("copied");
+      }, 500);
+    });
+  }
+
+  // Generate a password on page load
+  window.onload = generatePassword;
+</script>
+
+</body>
+</html>
